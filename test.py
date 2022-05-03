@@ -176,20 +176,48 @@ def main_func():
     angle = 0.3
 
     i = 0
+
+    curr_pos = 0
+    prev_pos = 0
+
+    setpoint = 0
+    print('about to enter while')
     while i < 1000:
+        # print('inside while')
         ball_pos_array =  sim.simxGetObjectPosition(client_id, ball_handle, -1, sim.simx_opmode_blocking)
         # print(ball_pos_array)
-        error = ball_pos_array[1][0]
-        Kp = 0.3
+        
+        curr_pos = ball_pos_array[1][0]
+        kp_error = setpoint - curr_pos
+        # print(curr_pos)
+        Kp = -1
 
-        angle = Kp*error
+        kd_error = curr_pos - prev_pos
+        Kd = 10
+
+        angle = 1*(Kp*kp_error + Kd*kd_error)
         # angle = -1
+
+        print(Kp*kp_error, Kd*kd_error)
+
+        if angle > 1.57:
+            angle = 1.57
+        elif angle < -1.57:
+            angle = -1.57
+
+        # angle = -1.57
+
         sim.simxSetJointTargetPosition(client_id, revolute_joint_handle, angle, sim.simx_opmode_streaming)
 
-        i += 1
-        print(angle)
 
-    time.sleep(3)
+        i += 1
+        print("Angle: ",angle)
+        prev_pos = curr_pos
+
+        print('-----------------------------------------------------------')
+
+    # time.sleep(3)
+    print("Finished")
 
 if __name__ == "__main__":
     try:
