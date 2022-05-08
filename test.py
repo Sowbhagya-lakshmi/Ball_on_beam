@@ -169,6 +169,7 @@ def exit_remote_api_server():
 def main_func():
     return_code, revolute_joint_handle = sim.simxGetObjectHandle(client_id, "Servo_shaft", sim.simx_opmode_blocking)
     return_code, ball_handle = sim.simxGetObjectHandle(client_id, "Ball", sim.simx_opmode_blocking)
+    
     # return_code, revolute_joint_handle = sim.simxGetObjectHandle(client_id, "Revolute_joint", sim.simx_opmode_blocking)
 
 
@@ -181,11 +182,12 @@ def main_func():
     prev_pos = 0
 
     setpoint = 0
+
     print('about to enter while')
     while i < 1000:
         # print('inside while')
         ball_pos_array =  sim.simxGetObjectPosition(client_id, ball_handle, -1, sim.simx_opmode_blocking)
-        # print(ball_pos_array)
+        print(ball_pos_array)
         
         curr_pos = ball_pos_array[1][0]
         kp_error = setpoint - curr_pos
@@ -193,12 +195,12 @@ def main_func():
         Kp = -1
 
         kd_error = curr_pos - prev_pos
-        Kd = 10
+        Kd = 20
 
         angle = 1*(Kp*kp_error + Kd*kd_error)
         # angle = -1
 
-        print(Kp*kp_error, Kd*kd_error)
+        # print(Kp*kp_error, Kd*kd_error)
 
         if angle > 1.57:
             angle = 1.57
@@ -211,10 +213,10 @@ def main_func():
 
 
         i += 1
-        print("Angle: ",angle)
+        # print("Angle: ",angle)
         prev_pos = curr_pos
 
-        print('-----------------------------------------------------------')
+        # print('-----------------------------------------------------------')
 
     # time.sleep(3)
     print("Finished")
